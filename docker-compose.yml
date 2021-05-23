@@ -1,0 +1,59 @@
+x-service: &service
+  restart: unless-stopped
+x-env: &env
+  PUID: 1000
+  PGID: 1000
+  TZ: America/Halifax
+version: "2.1"
+services:
+  wireguard:
+    <<: *service
+    image: ghcr.io/linuxserver/wireguard
+    environment:
+      <<: *env
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    ports:
+      - 51820:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    volumes:
+      # Requires ./wireguard/wg0.conf.
+      # If `ip -6 address add <...> dev wg0` outputs: "RTNETLINK answers: Permission denied":
+      # - Remove v6 address on `Address` line
+      # - Remove ::/0 on `AllowedIPs` line
+      - ./wireguard:/config
+      - /lib/modules:/lib/modules
+  qbittorrent:
+    <<: *service
+    image: ghcr.io/linuxserver/qbittorrent
+    network_mode: service:wireguard
+    environment:
+      <<: *env
+      # This port needs to be forwarded by WireGuard.
+      WEBUI_PORT: 57419
+    volumes:
+      - ./qbittorrent:/config
+      - ./torrents:/downloads
+  plex:
+    <<: *service
+    image: ghcr.io/linuxserver/plex
+    environment:
+      <<: *env
+      PLEX_CLAIM:
+    ports:
+      - 32400:32400
+      - 1900:1900/udp
+      - 5353:5353/udp
+      - 8324:8324
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+      - 32469:32469
+    volumes:
+      - ./plex:/config
+      - ./movies:/movies
+      - ./torrents:/torrents
+      - ./tv:/tv
