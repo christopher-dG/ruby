@@ -31,7 +31,7 @@ services:
     network_mode: service:wireguard
     environment:
       <<: *env
-      # This port needs to be forwarded by WireGuard.
+      # This port needs to be forwarded by the VPN provider.
       WEBUI_PORT: 57419
     volumes:
       - ./qbittorrent:/config
