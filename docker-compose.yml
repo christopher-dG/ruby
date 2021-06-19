@@ -6,6 +6,28 @@ x-env: &env
   TZ: America/Halifax
 version: "2.1"
 services:
+  caddy:
+    <<: *service
+    image: caddy
+    environment:
+      <<: *env
+      XDG_DATA_HOME: /etc
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./caddy:/etc/caddy
+  calibre:
+    <<: *service
+    image: ghcr.io/linuxserver/calibre-web
+    environment:
+      <<: *env
+      DOCKER_MODS: linuxserver/calibre-web:calibre
+    ports:
+      - 8083:8083
+    volumes:
+      - ./calibre:/config
+      - ./books:/books
   wireguard:
     <<: *service
     image: ghcr.io/linuxserver/wireguard

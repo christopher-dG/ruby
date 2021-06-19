@@ -1,0 +1,7 @@
+books.cdg.dev {
+	reverse_proxy calibre:8083
+}
+
+plex.cdg.dev {
+	reverse_proxy plex:32400
+}

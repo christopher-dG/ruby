@@ -1,6 +1,11 @@
+/books
+/caddy/*
+/calibre
 /movies
 /plex
 /qbittorrent
 /torrents
 /tv
 /wireguard
+
+!/caddy/Caddyfile
