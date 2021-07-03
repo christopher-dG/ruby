@@ -78,6 +78,6 @@ services:
       - 32469:32469
     volumes:
       - ./plex:/config
-      - ./movies:/movies
       - ./torrents:/torrents
-      - ./tv:/tv
+      - ./torrents/movies:/movies  # Movies are flat.
+      - ./tv:/tv                   # TV shows are manually organized with symlinks.
