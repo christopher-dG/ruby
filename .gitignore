@@ -1,10 +1,5 @@
-/books
-/caddy/*
-/calibre
-/movies
-/plex
-/qbittorrent
-/torrents
-/wireguard
+/config
+/data
 
-!/caddy/Caddyfile
+# This doesn't work, so I've just force-added the file.
+!/config/caddy/Caddyfile

@@ -16,7 +16,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./caddy:/etc/caddy
+      - ./config/caddy:/etc/caddy
   guacamole:
     <<: *service
     image: ghcr.io/linuxserver/guacd
@@ -33,8 +33,8 @@ services:
       - 8080:8080
       - 8081:8081
     volumes:
-      - ./calibre/desktop:/config
-      - ./books:/books
+      - ./config/calibre/desktop:/config
+      - ./data/books:/books
   calibre-web:
     <<: *service
     image: ghcr.io/linuxserver/calibre-web
@@ -44,8 +44,8 @@ services:
     ports:
       - 8083:8083
     volumes:
-      - ./calibre/web:/config
-      - ./books:/books
+      - ./config/calibre/web:/config
+      - ./data/books:/books
   wireguard:
     <<: *service
     image: ghcr.io/linuxserver/wireguard
@@ -63,7 +63,7 @@ services:
       # If `ip -6 address add <...> dev wg0` outputs: "RTNETLINK answers: Permission denied":
       # - Remove v6 address on `Address` line
       # - Remove ::/0 on `AllowedIPs` line
-      - ./wireguard:/config
+      - ./config/wireguard:/config
       - /lib/modules:/lib/modules
   qbittorrent:
     <<: *service
@@ -74,8 +74,8 @@ services:
       # This port needs to be forwarded by the VPN provider.
       WEBUI_PORT: 57419
     volumes:
-      - ./qbittorrent:/config
-      - ./torrents:/downloads
+      - ./config/qbittorrent:/config
+      - ./data/torrents:/downloads
   plex:
     <<: *service
     image: ghcr.io/linuxserver/plex
@@ -95,7 +95,7 @@ services:
       - 32414:32414/udp
       - 32469:32469
     volumes:
-      - ./plex:/config
-      - ./torrents:/torrents
-      - ./torrents/movies:/movies  # Movies are flat.
-      - ./tv:/tv                   # TV shows are manually organized with symlinks.
+      - ./config/plex:/config
+      - ./data/torrents:/torrents
+      - ./data/torrents/movies:/movies  # Movies are flat.
+      - ./tv:/tv                        # TV shows are manually organized with symlinks.
