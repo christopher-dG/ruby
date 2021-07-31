@@ -59,7 +59,7 @@ services:
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     volumes:
-      # Requires ./wireguard/wg0.conf.
+      # Requires ./config/wireguard/wg0.conf.
       # If `ip -6 address add <...> dev wg0` outputs: "RTNETLINK answers: Permission denied":
       # - Remove v6 address on `Address` line
       # - Remove ::/0 on `AllowedIPs` line
@@ -96,6 +96,5 @@ services:
       - 32469:32469
     volumes:
       - ./config/plex:/config
-      - ./data/torrents:/torrents
-      - ./data/torrents/movies:/movies  # Movies are flat.
-      - ./tv:/tv                        # TV shows are manually organized with symlinks.
+      - ./data/torrents:/data/torrents
+      - ./tv:/tv
