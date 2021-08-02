@@ -17,6 +17,17 @@ services:
       - 443:443
     volumes:
       - ./config/caddy:/etc/caddy
+  portainer:
+    <<: *service
+    image: portainer/portainer-ce
+    environment:
+      <<: *env
+    ports:
+      - 8000:8000
+      - 9000:9000
+    volumes:
+      - ./config/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
   guacamole:
     <<: *service
     image: ghcr.io/linuxserver/guacd

@@ -2,6 +2,7 @@ This is my home server configuration.
 
 Services currently running:
 
+- [Portainer](https://portainer.io): An admin console for Docker containers.
 - [Caddy](https://caddyserver.com): A web server that proxies to the below services.
 - [WireGuard](https://wireguard.com): A VPN client that other services can tunnel through.
 - [qBittorrent](https://qbittorrent.org): BitTorrent client which tunnels through the VPN.

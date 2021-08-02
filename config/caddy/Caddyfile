@@ -1,3 +1,7 @@
+admin.cdg.dev {
+	reverse_proxy portainer:9000
+}
+
 books.cdg.dev {
 	reverse_proxy calibre-web:8083
 }
