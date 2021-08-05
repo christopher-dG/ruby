@@ -38,6 +38,7 @@ services:
   calibre-desktop:
     <<: *service
     image: ghcr.io/linuxserver/calibre
+    privileged: true
     environment:
       <<: *env
     ports:

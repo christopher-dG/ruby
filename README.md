@@ -24,3 +24,14 @@ Directory structure requirements:
         ├── movies
         └── tv
 ```
+
+---
+
+TODO: Automate this better (fstab?).
+
+Mount Kobo inside container:
+
+```sh
+docker-compose exec calibre-desktop bash
+mount -t vfat -o gid=$PGID,uid=$PUID /dev/sdc /mnt
+```
