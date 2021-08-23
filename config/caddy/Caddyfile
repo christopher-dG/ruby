@@ -6,6 +6,17 @@ books.cdg.dev {
 	reverse_proxy calibre-web:8083
 }
 
+files.cdg.dev {
+	basicauth /* {
+		cdg JDJhJDE0JEhrRWtaNk8uWXJWT05HTjJ1UW9zcGVzVXNuVENNZFUycTFPdUx6andZZmY4LmIwRGN3RmdX
+	}
+
+	file_server browse {
+		root /data
+		hide hidden/ lost+found/ {$HIDDEN_FILES}
+	}
+}
+
 plex.cdg.dev {
 	reverse_proxy plex:32400
 }

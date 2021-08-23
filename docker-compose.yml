@@ -12,11 +12,13 @@ services:
     environment:
       <<: *env
       XDG_DATA_HOME: /etc
+      HIDDEN_FILES:
     ports:
       - 80:80
       - 443:443
     volumes:
       - ./config/caddy:/etc/caddy
+      - ./data:/data
   portainer:
     <<: *service
     image: portainer/portainer-ce
@@ -108,5 +110,5 @@ services:
       - 32469:32469
     volumes:
       - ./config/plex:/config
-      - ./data/torrents:/data/torrents
+      - ./data:/data
       - ./tv:/tv
