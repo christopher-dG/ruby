@@ -112,3 +112,10 @@ services:
       - ./config/plex:/config
       - ./data:/data
       - ./tv:/tv
+  plex-qbt:
+    <<: *service
+    build: services/plex_qbt
+    environment:
+      <<: *env
+      PLEX_TOKEN:
+      QBT_PASSWORD:
