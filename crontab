@@ -1,0 +1,1 @@
+0 3 */7 * * docker-compose --file ~/ruby/docker-compose.jobs.yml run backup
