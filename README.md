@@ -21,8 +21,6 @@ Directory structure requirements:
 └── data
     ├── books
     └── torrents
-        ├── movies
-        └── tv
 ```
 
 ---

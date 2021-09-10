@@ -89,7 +89,27 @@ services:
       WEBUI_PORT: 57419
     volumes:
       - ./config/qbittorrent:/config
-      - ./data/torrents:/downloads
+      - ./data/torrents:/data/torrents
+  radarr:
+    <<: *service
+    image: ghcr.io/linuxserver/radarr
+    environment:
+      <<: *env
+    ports:
+      - 7878:7878
+    volumes:
+      - ./config/radarr:/config
+      - ./data:/data
+  sonarr:
+    <<: *service
+    image: ghcr.io/linuxserver/sonarr
+    environment:
+      <<: *env
+    ports:
+      - 8989:8989
+    volumes:
+      - ./config/sonarr:/config
+      - ./data:/data
   plex:
     <<: *service
     image: ghcr.io/linuxserver/plex
