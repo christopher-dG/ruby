@@ -16,7 +16,7 @@ while True:
     limit = 0
     for s in plex.sessions():
         for p in s.players:
-            if not p.local:
+            if not p.address.startswith("192.168.0."):
                 limit = 1
     qbt.transfer_set_upload_limit(limit)
     time.sleep(10)
