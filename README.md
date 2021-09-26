@@ -6,10 +6,10 @@ Services currently running:
 - [Caddy](https://caddyserver.com): A web server that proxies to the below services and provides a static file server.
 - [WireGuard](https://wireguard.com): A VPN client that other services can tunnel through.
 - [qBittorrent](https://qbittorrent.org): BitTorrent client which tunnels through the VPN.
-- [Plex](https://plex.tv): A media player frontend for the BitTorrent downloads.
-- [Guacamole](https://guacamole.apache.org): A gateway for accessing desktop applications over a web browser.
-- [Calibre](https://calibre-ebook.com): A book library manager accessed via Guacamole.
-- [Calibre-Web](https://github.com/janeczku/calibre-web): A web frontend for the Calibre library.
+- [Radarr](https://radarr.video): Movie collection manager.
+- [Sonarr](https://sonarr.tv): TV show collection manager.
+- [Plex](https://plex.tv): A media player frontend.
+- [Calibre-Web](https://github.com/janeczku/calibre-web): A web frontend my Calibre book library.
 
 Directory structure requirements:
 
