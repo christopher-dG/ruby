@@ -30,26 +30,7 @@ services:
     volumes:
       - ./config/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
-  guacamole:
-    <<: *service
-    image: ghcr.io/linuxserver/guacd
-    environment:
-      <<: *env
-    ports:
-      - 4822:4822
-  calibre-desktop:
-    <<: *service
-    image: ghcr.io/linuxserver/calibre
-    privileged: true
-    environment:
-      <<: *env
-    ports:
-      - 8080:8080
-      - 8081:8081
-    volumes:
-      - ./config/calibre/desktop:/config
-      - ./data/books:/books
-  calibre-web:
+  calibre:
     <<: *service
     image: ghcr.io/linuxserver/calibre-web
     environment:
@@ -58,7 +39,7 @@ services:
     ports:
       - 8083:8083
     volumes:
-      - ./config/calibre/web:/config
+      - ./config/calibre:/config
       - ./data/books:/books
   wireguard:
     <<: *service
