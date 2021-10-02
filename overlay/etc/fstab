@@ -1,0 +1,14 @@
+# /dev/nvme0n1p2
+UUID=bde4d149-1d20-492f-b079-955ee75fca75 / ext4 rw,relatime 0 1
+
+# /dev/nvme0n1p1
+UUID=7663-4226 /boot vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
+
+# /dev/sda1
+UUID=5cd22bae-d48b-44b3-9a72-43f458de9202 /mnt/hdd1 ext4 rw,noatime,stripe=8191,nofail 0 2
+
+# /dev/sdb1
+UUID=202bf4f5-d3c6-4846-b447-7ca36def7952 /mnt/hdd2 ext4 rw,noatime,stripe=8191,nofail 0 2
+
+# mergerfs
+/mnt/hdd* /data fuse.mergerfs allow_other,use_ino,cache.files=partial,dropcacheonclose=true,category.create=mfs 0 2
