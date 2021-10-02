@@ -122,6 +122,15 @@ services:
       - ./config/tautulli:/config
     ports:
       - 8181:8181
+  heimdall:
+    <<: *service
+    image: ghcr.io/linuxserver/heimdall
+    environment:
+      <<: *env
+    volumes:
+      - ./config/heimdall:/config
+    ports:
+      - 8080:80
   plex-qbt:
     <<: *service
     build: services/plex_qbt

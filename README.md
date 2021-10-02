@@ -9,8 +9,9 @@ Services currently running:
 - [Radarr](https://radarr.video): Movie collection manager.
 - [Sonarr](https://sonarr.tv): TV show collection manager.
 - [Plex](https://plex.tv): Media player frontend.
-- [Tautulli](https://tautulli.com/): Nifty metrics for the Plex server.
+- [Tautulli](https://tautulli.com): Nifty metrics for the Plex server.
 - [Calibre-Web](https://github.com/janeczku/calibre-web): Web frontend my Calibre book library.
+- [Heimdall](https://heimdall.site): Web homepage with links to all the above services on my local network.
 
 Directory structure requirements:
 
