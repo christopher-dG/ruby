@@ -6,7 +6,7 @@ from qbittorrentapi import Client as Qbt
 
 PLEX_HOST = "http://plex:32400"
 QBT_HOST = "89.36.78.149"
-QBT_PORT = 57419
+QBT_PORT = 55082
 
 plex = Plex(PLEX_HOST, os.environ["PLEX_TOKEN"])
 qbt = Qbt(host=QBT_HOST, port=QBT_PORT, username="admin", password=os.environ["QBT_PASSWORD"])
