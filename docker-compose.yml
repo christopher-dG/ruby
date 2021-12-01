@@ -91,6 +91,15 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ./data:/data
+  prowlarr:
+    <<: *service
+    image: ghcr.io/linuxserver/prowlarr:develop
+    environment:
+      <<: *env
+    ports:
+      - 9696:9696
+    volumes:
+      - ./config/prowlarr:/config
   plex:
     <<: *service
     image: ghcr.io/linuxserver/plex
