@@ -19,4 +19,8 @@ while True:
             if not p.address.startswith("192.168.0."):
                 limit = 1
     qbt.transfer_set_upload_limit(limit)
+    to_seed = 0
+    for t in qbt.torrents_info():
+        to_seed += t.total_size * (1.5 - t.ratio)
+    print(f"To seed: {round(to_seed / 1_000_000_000)} GiB", flush=True)
     time.sleep(10)
