@@ -12,6 +12,7 @@ plex = Plex(PLEX_HOST, os.environ["PLEX_TOKEN"])
 qbt = Qbt(host=QBT_HOST, port=QBT_PORT, username="admin", password=os.environ["QBT_PASSWORD"])
 qbt.auth_log_in()
 
+i = 0
 while True:
     limit = 0
     for s in plex.sessions():
@@ -22,5 +23,7 @@ while True:
     to_seed = 0
     for t in qbt.torrents_info():
         to_seed += t.total_size * (1.5 - t.ratio)
-    print(f"To seed: {round(to_seed / 1_000_000_000)} GiB", flush=True)
+    if not i % 360:
+        print(f"To seed: {round(to_seed / 1_000_000_000)} GiB", flush=True)
+    i += 1
     time.sleep(10)
