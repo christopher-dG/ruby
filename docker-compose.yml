@@ -164,7 +164,8 @@ services:
     image: grafana/grafana
     environment:
       <<: *env
+    user: "0"  # This is gross but oh well.
     volumes:
-      - ./config/grafana:/etc/grafana
+      - ./config/grafana:/var/lib/grafana
     ports:
       - 3000:3000
