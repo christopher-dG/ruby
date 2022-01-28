@@ -2,7 +2,7 @@ version: "2.1"
 services:
   backup:
     image: amazon/aws-cli
-    command: s3 sync /config s3://$S3_BUCKET/ruby/ --delete --exclude */Cache/*
+    command: s3 sync /config s3://$S3_BUCKET/ruby/ --delete --exclude */Cache/* --exclude *.bif
     environment:
       AWS_ACCESS_KEY_ID:
       AWS_SECRET_ACCESS_KEY:
