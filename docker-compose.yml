@@ -62,7 +62,8 @@ services:
       - /lib/modules:/lib/modules
   qbittorrent:
     <<: *service
-    image: ghcr.io/linuxserver/qbittorrent
+    # TODO: Why does qBittorrent 4.4.1 not work? (DHT 0 nodes)
+    image: ghcr.io/linuxserver/qbittorrent:4.4.0
     network_mode: service:wireguard
     environment:
       <<: *env
