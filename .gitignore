@@ -1,6 +1,7 @@
 .env
 /config
 /data
+__pycache__/
 
 # This doesn't work, so I've just force-added the file.
 !/config/caddy/Caddyfile

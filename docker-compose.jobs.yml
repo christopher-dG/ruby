@@ -9,3 +9,17 @@ services:
       S3_BUCKET:
     volumes:
       - ./config:/config
+  netlify:
+    build: jobs/netlify
+    environment:
+      NETLIFY_TOKEN:
+  qbittorrent:
+    build: jobs/qbittorrent
+    environment:
+      DATA_DIR: /data
+      QBT_HOST: 89.36.78.149
+      QBT_PORT: 55082
+      QBT_USERNAME: admin
+      QBT_PASSWORD:
+    volumes:
+      - /data:/data

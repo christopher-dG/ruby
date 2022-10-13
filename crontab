@@ -1,1 +1,3 @@
-@weekly docker-compose --file ~/ruby/docker-compose.jobs.yml run backup
+@weekly docker-compose --file ~/ruby/docker-compose.jobs.yml run --rm backup
+@hourly docker compose --file ~/ruby/docker-compose.jobs.yml run --rm netlify
+*/5 * * * * docker compose --file ~/ruby/docker-compose.jobs.yml run --rm qbittorrent
