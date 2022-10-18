@@ -18,9 +18,11 @@ def iter_torrents(qbt):
             dest_dir = os.path.join(DATA_DIR, t.category.lower(), t.name)
             if not os.path.isdir(dest_dir):
                 os.mkdir(dest_dir)
-                for f in t.files:
-                    src_file = os.path.join(t.save_path, f.name)
-                    dest_file = os.path.join(dest_dir, os.path.basename(f.name))
+            for f in t.files:
+                src_file = os.path.join(t.save_path, f.name)
+                dest_file = os.path.join(dest_dir, os.path.basename(f.name))
+                if not os.path.isfile(dest_file):
+                    print(f"Moving {src_file} -> {dest_file}")
                     os.link(src_file, dest_file)
         if t.ratio >= t.max_ratio:
             t.delete(delete_files=True)
