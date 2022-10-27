@@ -17,6 +17,12 @@ files.cdg.dev {
 	}
 }
 
+public.cdg.dev {
+  file_server browse {
+    root /data/public
+  }
+}
+
 plex.cdg.dev {
 	reverse_proxy plex:32400
 }
