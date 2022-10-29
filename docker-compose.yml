@@ -110,6 +110,19 @@ services:
     volumes:
       - ./config/bazarr:/config
       - ./data:/data
+  tdarr:
+    <<: *service
+    image: ghcr.io/haveagitgat/tdarr
+    environment:
+      <<: *env
+      internalNode: true
+    ports:
+      - 8265:8265
+      - 8266:8266
+      - 8267:8267
+    volumes:
+      - ./config/tdarr:/app
+      - ./data:/data
   plex:
     <<: *service
     image: ghcr.io/linuxserver/plex
