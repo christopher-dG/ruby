@@ -9,9 +9,12 @@ Services currently running:
 - [Radarr](https://radarr.video): Movie collection manager.
 - [Sonarr](https://sonarr.tv): TV show collection manager.
 - [Prowlarr](https://prowlarr.com): Indexer manager for Radarr and Sonarr.
+- [Bazarr](https://www.bazarr.media): Subtitle manager.
+- [Tdarr](https://https://tdarr.io): Video transcoding manager for saving disk space.
 - [Plex](https://plex.tv): Media player frontend.
 - [Tautulli](https://tautulli.com): Nifty metrics for the Plex server.
 - [Calibre-Web](https://github.com/janeczku/calibre-web): Web frontend my Calibre book library.
+- kepubify: A wrapper around [kepubify](https://pgaskin.net/kepubify) for on-demand book conversion (I can skip Calibre and download books directly onto my Kobo!).
 
 Directory structure requirements:
 
