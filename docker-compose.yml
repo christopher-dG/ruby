@@ -41,6 +41,16 @@ services:
     volumes:
       - ./config/calibre:/config
       - ./data/books:/books
+  kepubify:
+    <<: *service
+    build: services/kepubify
+    environment:
+      <<: *env
+      BOOKS_PATH: /books
+    volumes:
+      - ./data/books:/books
+    ports:
+      - 5555:5555
   wireguard:
     <<: *service
     image: ghcr.io/linuxserver/wireguard

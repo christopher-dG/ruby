@@ -8,7 +8,7 @@ books.cdg.dev {
 
 files.cdg.dev {
 	basicauth /* {
-		cdg JDJhJDE0JEhrRWtaNk8uWXJWT05HTjJ1UW9zcGVzVXNuVENNZFUycTFPdUx6andZZmY4LmIwRGN3RmdX
+		cdg $2a$14$uA3c7xP0mq3znOnJccO3Geuqqf3di6iDf9aRGrX/R5SuTFVHYvSL2
 	}
 
 	file_server browse {
@@ -17,12 +17,24 @@ files.cdg.dev {
 	}
 }
 
-public.cdg.dev {
-  file_server browse {
-    root /data/public
-  }
+kepubify.cdg.dev {
+	reverse_proxy kepubify:5555
 }
 
 plex.cdg.dev {
 	reverse_proxy plex:32400
+}
+
+public.cdg.dev {
+	file_server browse {
+		root /data/public
+	}
+}
+
+radarr.cdg.dev {
+	reverse_proxy radarr:7878
+}
+
+sonarr.cdg.dev {
+	reverse_proxy sonarr:8989
 }

@@ -22,4 +22,4 @@ services:
       QBT_USERNAME: admin
       QBT_PASSWORD:
     volumes:
-      - /data:/data
+      - ./data:/data
