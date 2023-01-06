@@ -1,8 +1,10 @@
 import os
 import subprocess
+import time
 
 from pathlib import Path
 from tempfile import gettempdir
+from threading import Thread
 
 from flask import Flask, Response, render_template_string, send_file
 
@@ -43,9 +45,8 @@ def filter(sub: str) -> str:
 def kepubify(i: int) -> Response:
     path = list_books()[i][1]
     kepub = convert(path)
-    resp = send_file(kepub)
-    resp.call_on_close(lambda: path.unlink())
-    return resp
+    Thread(target=defer_delete, args=(kepub,)).start()
+    return send_file(kepub, mimetype="application/epub+zip", as_attachment=True)
 
 
 def list_books() -> list[tuple[int, Path]]:
@@ -59,6 +60,19 @@ def render(books: list[tuple[int, Path]]) -> str:
 
 
 def convert(path: Path) -> Path:
-    out = (Path(gettempdir()) / path).with_suffix(".kepub")
+    out = (Path(gettempdir()) / path.name).with_suffix(".kepub.epub")
+    log(f"Converting {path} to {out}")
     subprocess.run(["kepubify", "--output", out, path], check=True)
     return out
+
+
+def defer_delete(path: Path) -> None:
+    log(f"Deleting {path} in 5 minutes")
+    time.sleep(300)
+    path.unlink()
+    log(f"Deleted {path}")
+
+
+def log(msg: str) -> bool:
+    print(msg, flush=True)
+    return True
