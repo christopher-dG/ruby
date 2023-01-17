@@ -2,6 +2,7 @@ import os
 import sqlite3
 import subprocess
 import time
+import warnings
 
 from contextlib import contextmanager
 from pathlib import Path
@@ -11,9 +12,11 @@ from textwrap import dedent
 from threading import Thread
 from typing import Any, Generator
 
+from ebooklib import epub
 from flask import Flask, Response, render_template_string, send_file
 
 app = Flask(__name__)
+warnings.simplefilter("ignore")
 
 BOOKS_PATH = Path(os.environ["BOOKS_PATH"])
 INDEX = """
@@ -41,7 +44,7 @@ def index(sub: str = "") -> str:
 @app.route("/kepubify/<int:book>")
 def kepubify(book: int) -> Response:
     path = path_of_book(book)
-    kepub = convert(path)
+    kepub = convert(fix_metadata(book, path))
     Thread(target=defer_delete, args=(kepub,)).start()
     return send_file(kepub, mimetype="application/epub+zip", as_attachment=True)
 
@@ -71,6 +74,30 @@ def path_of_book(book: int) -> Path:
     return (BOOKS_PATH / dir / file).with_suffix(".epub")
 
 
+def fix_metadata(book: int, path: Path) -> Path:
+    data = epub.read_epub(path)
+    with db_cursor() as cur:
+        (title,) = fetch_one(cur, "select title from books where id = ?", book)
+        query = """
+        select a.name, a.sort
+        from books_authors_link as l join authors as a on l.author = a.id
+        where l.book = ?
+        """
+        authors = fetch_all(cur, query, book)
+    ns = "http://purl.org/dc/elements/1.1/"
+    data.metadata[ns]["title"] = []
+    data.metadata[ns]["creator"] = []
+    data.set_title(title)
+    log(f"Setting title to '{title}'")
+    for (author, sort) in authors:
+        log(f"Adding author '{author}'")
+        data.add_author(author, file_as=sort)
+    out = Path(gettempdir()) / path.name
+    epub.write_epub(out, data)
+    Thread(target=defer_delete, args=(out,)).start()
+    return out
+
+
 def convert(path: Path) -> Path:
     out = (Path(gettempdir()) / path.name).with_suffix(".kepub.epub")
     log(f"Converting {path} to {out}")
@@ -81,8 +108,11 @@ def convert(path: Path) -> Path:
 def defer_delete(path: Path) -> None:
     log(f"Deleting {path} in 5 minutes")
     time.sleep(300)
-    path.unlink()
-    log(f"Deleted {path}")
+    try:
+        path.unlink()
+        log(f"Deleted {path}")
+    except:
+        pass
 
 
 def log(msg: str) -> bool:
