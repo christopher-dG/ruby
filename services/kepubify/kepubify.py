@@ -1,15 +1,21 @@
 import os
+import sqlite3
 import subprocess
 import time
 
+from contextlib import contextmanager
 from pathlib import Path
+from sqlite3 import Cursor
 from tempfile import gettempdir
+from textwrap import dedent
 from threading import Thread
+from typing import Any, Generator
 
 from flask import Flask, Response, render_template_string, send_file
 
 app = Flask(__name__)
 
+BOOKS_PATH = Path(os.environ["BOOKS_PATH"])
 INDEX = """
 <!doctype html>
 <html lang="en">
@@ -27,36 +33,42 @@ INDEX = """
 
 
 @app.route("/")
-def index() -> str:
-    return render(list_books())
-
-
 @app.route("/<string:sub>")
-def filter(sub: str) -> str:
-    sub = sub.lower()
-    books = []
-    for (i, path) in list_books():
-        if sub in path.name.lower():
-            books.append((i, path))
-    return render(books)
+def index(sub: str = "") -> str:
+    return render_index(sub)
 
 
-@app.route("/kepubify/<int:i>")
-def kepubify(i: int) -> Response:
-    path = list_books()[i][1]
+@app.route("/kepubify/<int:book>")
+def kepubify(book: int) -> Response:
+    path = path_of_book(book)
     kepub = convert(path)
     Thread(target=defer_delete, args=(kepub,)).start()
     return send_file(kepub, mimetype="application/epub+zip", as_attachment=True)
 
 
-def list_books() -> list[tuple[int, Path]]:
-    root = Path(os.environ["BOOKS_PATH"])
-    return list(enumerate(sorted(root.glob("*/*/*.epub"))))
+def render_index(sub: str = "") -> str:
+    books = []
+    with db_cursor() as cur:
+        query = """
+        select books.id, books.author_sort, books.title
+        from books join data on books.id = data.book
+        where data.format = 'EPUB'
+        order by books.author_sort
+        """
+        for (id, author, title) in fetch_all(cur, query):
+            name = f"{author} - {title}"
+            if sub.lower() in name.lower():
+                books.append({"id": id, "name": name})
+    return render_template_string(INDEX, books=books)
 
 
-def render(books: list[tuple[int, Path]]) -> str:
-    ctx = {"books": [{"index": i, "name": path.name} for (i, path) in books]}
-    return render_template_string(INDEX, **ctx)
+def path_of_book(book: int) -> Path:
+    with db_cursor() as cur:
+        (dir,) = fetch_one(cur, "select path from books where id = ?", book)
+        (file,) = fetch_one(
+            cur, "select name from data where book = ? and format = 'EPUB'", book
+        )
+    return (BOOKS_PATH / dir / file).with_suffix(".epub")
 
 
 def convert(path: Path) -> Path:
@@ -76,3 +88,26 @@ def defer_delete(path: Path) -> None:
 def log(msg: str) -> bool:
     print(msg, flush=True)
     return True
+
+
+@contextmanager
+def db_cursor() -> Generator[Cursor, None, None]:
+    conn = sqlite3.connect(BOOKS_PATH / "metadata.db")
+    cur = conn.cursor()
+    try:
+        yield cur
+    finally:
+        cur.close()
+        conn.close()
+
+
+def execute(cur: Cursor, query: str, *args: Any) -> Cursor:
+    return cur.execute(dedent(query.strip()), args)
+
+
+def fetch_one(cur: Cursor, query: str, *args: Any) -> tuple:
+    return execute(cur, query, *args).fetchone()
+
+
+def fetch_all(cur: Cursor, query: str, *args: Any) -> list[tuple]:
+    return execute(cur, query, *args).fetchall()
