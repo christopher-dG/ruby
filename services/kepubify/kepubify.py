@@ -17,7 +17,7 @@ INDEX = """
     <ul>
       {% for book in books %}
       <li style="margin: 10px">
-        <a href="/kepubify/{{ book.index }}" style="color: black">{{ book.name }}</a>
+        <a href="/kepubify/{{ book.id }}" style="color: black; text-decoration: none">{{ book.name }}</a>
       </li>
       {% endfor %}
     </ul>
