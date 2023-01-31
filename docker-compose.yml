@@ -113,7 +113,7 @@ services:
       - ./data:/data
   prowlarr:
     <<: *service
-    image: lscr.io/linuxserver/prowlarr:develop
+    image: lscr.io/linuxserver/prowlarr
     environment:
       <<: *env
     ports:
