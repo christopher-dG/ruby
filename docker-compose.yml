@@ -32,7 +32,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
   calibre:
     <<: *service
-    image: ghcr.io/linuxserver/calibre-web
+    image: lscr.io/linuxserver/calibre-web
     environment:
       <<: *env
       DOCKER_MODS: linuxserver/calibre-web:calibre
@@ -53,7 +53,7 @@ services:
       - 5555:5555
   wireguard:
     <<: *service
-    image: ghcr.io/linuxserver/wireguard
+    image: lscr.io/linuxserver/wireguard
     environment:
       <<: *env
     cap_add:
@@ -72,7 +72,7 @@ services:
       - /lib/modules:/lib/modules
   qbittorrent:
     <<: *service
-    image: ghcr.io/linuxserver/qbittorrent
+    image: lscr.io/linuxserver/qbittorrent
     network_mode: service:wireguard
     environment:
       <<: *env
@@ -83,7 +83,7 @@ services:
       - ./data/torrents:/data/torrents
   radarr:
     <<: *service
-    image: ghcr.io/linuxserver/radarr
+    image: lscr.io/linuxserver/radarr
     environment:
       <<: *env
     ports:
@@ -93,7 +93,7 @@ services:
       - ./data:/data
   sonarr:
     <<: *service
-    image: ghcr.io/linuxserver/sonarr
+    image: lscr.io/linuxserver/sonarr
     environment:
       <<: *env
     ports:
@@ -103,7 +103,7 @@ services:
       - ./data:/data
   overseerr:
     <<: *service
-    image: ghcr.io/linuxserver/overseerr
+    image: lscr.io/linuxserver/overseerr
     environment:
       <<: *env
     ports:
@@ -113,7 +113,7 @@ services:
       - ./data:/data
   prowlarr:
     <<: *service
-    image: ghcr.io/linuxserver/prowlarr:develop
+    image: lscr.io/linuxserver/prowlarr:develop
     environment:
       <<: *env
     ports:
@@ -122,7 +122,7 @@ services:
       - ./config/prowlarr:/config
   bazarr:
     <<: *service
-    image: ghcr.io/linuxserver/bazarr
+    image: lscr.io/linuxserver/bazarr
     environment:
       <<: *env
     ports:
@@ -145,7 +145,7 @@ services:
       - ./data:/data
   plex:
     <<: *service
-    image: ghcr.io/linuxserver/plex
+    image: lscr.io/linuxserver/plex
     environment:
       <<: *env
       PLEX_CLAIM:
@@ -166,7 +166,7 @@ services:
       - ./data:/data
   tautulli:
     <<: *service
-    image: ghcr.io/linuxserver/tautulli
+    image: lscr.io/linuxserver/tautulli
     environment:
       <<: *env
     volumes:
