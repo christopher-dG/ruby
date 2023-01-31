@@ -38,3 +38,7 @@ radarr.cdg.dev {
 sonarr.cdg.dev {
 	reverse_proxy sonarr:8989
 }
+
+overseerr.cdg.dev {
+	reverse_proxy overseerr:5055
+}

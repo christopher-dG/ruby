@@ -101,6 +101,16 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ./data:/data
+  overseerr:
+    <<: *service
+    image: ghcr.io/linuxserver/overseerr
+    environment:
+      <<: *env
+    ports:
+      - 5055:5055
+    volumes:
+      - ./config/overseerr:/config
+      - ./data:/data
   prowlarr:
     <<: *service
     image: ghcr.io/linuxserver/prowlarr:develop
