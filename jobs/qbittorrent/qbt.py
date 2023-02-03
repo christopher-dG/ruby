@@ -22,9 +22,10 @@ def iter_torrents(qbt):
                 src_file = os.path.join(t.save_path, f.name)
                 dest_file = os.path.join(dest_dir, os.path.basename(f.name))
                 if not os.path.isfile(dest_file):
-                    print(f"Moving {src_file} -> {dest_file}")
+                    print(f"Moving {src_file} -> {dest_file}", flush=True)
                     os.link(src_file, dest_file)
-        if t.ratio >= t.max_ratio:
+            if t.ratio >= t.max_ratio:
+                print(f"Deleting {t.name}", flush=True)
             t.delete(delete_files=True)
     print(f"To upload: {round(to_upload / 1_000_000_000)} GiB", flush=True)
 
@@ -34,6 +35,7 @@ def check_ip(qbt):
     key = "bypass_auth_subnet_whitelist"
     configured_ip = qbt.app.preferences[key].split("/")[0]
     if current_ip != configured_ip:
+        print(f"Updating home IP to {current_ip}", flush=True)
         qbt.app.set_preferences({key: f"{current_ip}/32"})
 
 
