@@ -77,7 +77,7 @@ services:
     environment:
       <<: *env
       # This port needs to be forwarded by the VPN provider.
-      WEBUI_PORT: 56702
+      WEBUI_PORT: 58102
     volumes:
       - ./config/qbittorrent:/config
       - ./data/torrents:/data/torrents
