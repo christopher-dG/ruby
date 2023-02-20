@@ -26,7 +26,7 @@ def iter_torrents(qbt):
                     os.link(src_file, dest_file)
             if t.ratio >= t.max_ratio:
                 print(f"Deleting {t.name}", flush=True)
-            t.delete(delete_files=True)
+                t.delete(delete_files=True)
     print(f"To upload: {round(to_upload / 1_000_000_000)} GiB", flush=True)
 
 
