@@ -30,27 +30,6 @@ services:
     volumes:
       - ./config/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
-  calibre:
-    <<: *service
-    image: lscr.io/linuxserver/calibre-web
-    environment:
-      <<: *env
-      DOCKER_MODS: linuxserver/calibre-web:calibre
-    ports:
-      - 8083:8083
-    volumes:
-      - ./config/calibre:/config
-      - ./data/books:/books
-  kepubify:
-    <<: *service
-    build: services/kepubify
-    environment:
-      <<: *env
-      BOOKS_PATH: /books
-    volumes:
-      - ./data/books:/books
-    ports:
-      - 5555:5555
   wireguard:
     <<: *service
     image: lscr.io/linuxserver/wireguard
@@ -72,7 +51,7 @@ services:
       - /lib/modules:/lib/modules
   qbittorrent:
     <<: *service
-    image: lscr.io/linuxserver/qbittorrent
+    image: lscr.io/linuxserver/qbittorrent:4.5.2
     network_mode: service:wireguard
     environment:
       <<: *env
@@ -101,6 +80,52 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ./data:/data
+  readarr:
+    <<: *service
+    image: lscr.io/linuxserver/readarr:develop
+    environment:
+      <<: *env
+    ports:
+      - 8787:8787
+    volumes:
+      - ./config/readarr:/config
+      - ./data:/data
+  calibre-web:
+    <<: *service
+    image: lscr.io/linuxserver/calibre-web
+    environment:
+      <<: *env
+      DOCKER_MODS: linuxserver/calibre-web:calibre
+    ports:
+      - 8083:8083
+    volumes:
+      - ./config/calibre-web:/config
+      - ./data/books:/books
+  guacd:
+    image: guacamole/guacd
+  calibre-desktop:
+    <<: *service
+    image: lscr.io/linuxserver/calibre
+    environment:
+      <<: *env
+    volumes:
+      - ./config/calibre-desktop:/config
+      - ./data:/data
+    ports:
+      - 8080:8080
+      - 8081:8081
+    security_opt:
+      - seccomp:unconfined
+  kepubify:
+    <<: *service
+    build: services/kepubify
+    environment:
+      <<: *env
+      BOOKS_PATH: /books
+    volumes:
+      - ./data/books:/books
+    ports:
+      - 5555:5555
   overseerr:
     <<: *service
     image: lscr.io/linuxserver/overseerr
