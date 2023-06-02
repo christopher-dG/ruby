@@ -17,8 +17,8 @@ services:
     build: jobs/qbittorrent
     environment:
       DATA_DIR: /data
-      QBT_HOST: 146.70.198.171
-      QBT_PORT: 57352
+      QBT_HOST: 87.101.92.171
+      QBT_PORT: 13620
       QBT_USERNAME: admin
       QBT_PASSWORD:
     volumes:

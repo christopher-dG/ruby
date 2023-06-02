@@ -56,7 +56,7 @@ services:
     environment:
       <<: *env
       # This port needs to be forwarded by the VPN provider.
-      WEBUI_PORT: 57352
+      WEBUI_PORT: 13620
     volumes:
       - ./config/qbittorrent:/config
       - ./data/torrents:/data/torrents
@@ -145,6 +145,11 @@ services:
       - 9696:9696
     volumes:
       - ./config/prowlarr:/config
+  flaresolverr:
+    <<: *service
+    image: ghcr.io/flaresolverr/flaresolverr
+    ports:
+      - 8191:8191
   bazarr:
     <<: *service
     image: lscr.io/linuxserver/bazarr
