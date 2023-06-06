@@ -22,7 +22,7 @@ def iter_torrents(qbt):
             for f in t.files:
                 src_file = os.path.join(t.save_path, f.name)
                 dest_file = os.path.join(dest_dir, os.path.basename(f.name))
-                if not os.path.isfile(dest_file) and not has_been_converted(dest_file):
+                if should_link(dest_file):
                     print(f"Linking {src_file} -> {dest_file}", flush=True)
                     os.link(src_file, dest_file)
             if is_finished(t):
@@ -30,10 +30,17 @@ def iter_torrents(qbt):
                 t.delete(delete_files=True)
 
 
-def has_been_converted(path):
-    if not path.endswith(".mp4"):
+def should_link(path):
+    # File has already been linked.
+    if os.path.isfile(path):
         return False
-    return os.path.isfile(re.sub(r"\.mp4$", ".mkv", path))
+    # File has been converted.
+    if path.endswith(".mp4") and os.path.isfile(re.sub(r"\.mp4$", ".mkv", path)):
+        return False
+    # File is a sample of the main file.
+    if os.path.splitext(path)[0].endswith("-sample"):
+        return False
+    return True
 
 
 def is_finished(t):
