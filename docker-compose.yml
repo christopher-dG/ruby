@@ -145,6 +145,17 @@ services:
       - 9696:9696
     volumes:
       - ./config/prowlarr:/config
+  autobrr:
+    <<: *service
+    image: ghcr.io/autobrr/autobrr
+    environment:
+      <<: *env
+      AUTOBRR_PORT: 7474
+      AUTOBRR__HOST: 0.0.0.0
+    ports:
+      - 7474:7474
+    volumes:
+      - ./config/autobrr:/config
   flaresolverr:
     <<: *service
     image: ghcr.io/flaresolverr/flaresolverr
