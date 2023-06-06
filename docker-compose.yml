@@ -80,17 +80,7 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ./data:/data
-  readarr:
-    <<: *service
-    image: lscr.io/linuxserver/readarr:develop
-    environment:
-      <<: *env
-    ports:
-      - 8787:8787
-    volumes:
-      - ./config/readarr:/config
-      - ./data:/data
-  calibre-web:
+  calibre:
     <<: *service
     image: lscr.io/linuxserver/calibre-web
     environment:
@@ -99,23 +89,8 @@ services:
     ports:
       - 8083:8083
     volumes:
-      - ./config/calibre-web:/config
+      - ./config/calibre:/config
       - ./data/books:/books
-  guacd:
-    image: guacamole/guacd
-  calibre-desktop:
-    <<: *service
-    image: lscr.io/linuxserver/calibre
-    environment:
-      <<: *env
-    volumes:
-      - ./config/calibre-desktop:/config
-      - ./data:/data
-    ports:
-      - 8080:8080
-      - 8081:8081
-    security_opt:
-      - seccomp:unconfined
   kepubify:
     <<: *service
     build: services/kepubify
