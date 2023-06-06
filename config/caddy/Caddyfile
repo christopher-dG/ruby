@@ -17,6 +17,16 @@ files.cdg.dev {
 	}
 }
 
+share.cdg.dev {
+	basicauth /* {
+		share $2a$14$l.O2PSff5MeSisbjuVUtsOnafDjLRFMeK7wNWkPqJgeu2j8fodchy
+	}
+
+	file_server browse {
+		root /data/share/
+	}
+}
+
 kepubify.cdg.dev {
 	reverse_proxy kepubify:5555
 }

@@ -8,12 +8,12 @@ import requests
 from qbittorrentapi import Client
 
 DATA_DIR = os.environ["DATA_DIR"]
-ARR_CATAGORIES = ["Books", "Movies", "TV"]  # Managed by *arr apps, we can skip them.
+IGNORE_CATAGORIES = ["Books", "Movies", "TV", "Ratio"]  # Already managed or otherwise undesirable.
 
 
 def iter_torrents(qbt):
     for t in qbt.torrents.info():
-        if t.category in ARR_CATAGORIES:
+        if t.category in IGNORE_CATAGORIES:
             continue
         if t.amount_left == 0:
             dest_dir = os.path.join(DATA_DIR, t.category.lower(), t.name)
@@ -51,7 +51,7 @@ def is_finished(t):
 
 
 def check_ip(qbt):
-    current_ip = requests.get("https://httpbin.org/ip").json()["origin"]
+    current_ip = requests.get("https://icanhazip.com").text.strip()
     key = "bypass_auth_subnet_whitelist"
     configured_ip = qbt.app.preferences[key].split("/")[0]
     if current_ip != configured_ip:
