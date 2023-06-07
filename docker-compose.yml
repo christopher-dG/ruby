@@ -85,7 +85,7 @@ services:
     image: lscr.io/linuxserver/calibre-web
     environment:
       <<: *env
-      DOCKER_MODS: linuxserver/calibre-web:calibre
+      DOCKER_MODS: ghcr.io/linuxserver/mods:universal-calibre
     ports:
       - 8083:8083
     volumes:
