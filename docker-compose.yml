@@ -159,6 +159,8 @@ services:
     volumes:
       - ./config/tdarr:/app
       - ./data:/data
+    devices:
+      - /dev/dri:/dev/dri
   plex:
     <<: *service
     image: lscr.io/linuxserver/plex
@@ -180,6 +182,8 @@ services:
     volumes:
       - ./config/plex:/config
       - ./data:/data
+    devices:
+      - /dev/dri:/dev/dri
   tautulli:
     <<: *service
     image: lscr.io/linuxserver/tautulli
