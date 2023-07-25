@@ -14,7 +14,7 @@ Services currently running:
 - [Plex](https://plex.tv): Media player frontend.
 - [Tautulli](https://tautulli.com): Nifty metrics for the Plex server.
 - [Calibre-Web](https://github.com/janeczku/calibre-web): Web frontend my Calibre book library.
-- kepubify: A wrapper around [kepubify](https://pgaskin.net/kepubify) for on-demand book conversion (I can skip Calibre and download books directly onto my Kobo!).
+- azw3: A wrapper around [ebook-convert](https://manual.calibre-ebook.com/generated/en/ebook-convert.html) for on-demand book conversion (I can skip Calibre and download books directly onto my Kindle!).
 
 Directory structure requirements:
 

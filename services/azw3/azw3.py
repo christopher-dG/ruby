@@ -12,7 +12,6 @@ from textwrap import dedent
 from threading import Thread
 from typing import Any, Generator
 
-from ebooklib import epub
 from flask import Flask, Response, render_template_string, send_file
 
 app = Flask(__name__)
@@ -26,7 +25,7 @@ INDEX = """
     <ul>
       {% for book in books %}
       <li style="margin: 10px">
-        <a href="/kepubify/{{ book.id }}" style="color: black; text-decoration: none">{{ book.name }}</a>
+        <a href="/azw3/{{ book.id }}" style="color: black; text-decoration: none">{{ book.name }}</a>
       </li>
       {% endfor %}
     </ul>
@@ -41,12 +40,13 @@ def index(sub: str = "") -> str:
     return render_index(sub)
 
 
-@app.route("/kepubify/<int:book>")
-def kepubify(book: int) -> Response:
+@app.route("/azw3/<int:book>")
+def azw3(book: int) -> Response:
     path = path_of_book(book)
-    kepub = convert(fix_metadata(book, path))
-    Thread(target=defer_delete, args=(kepub,)).start()
-    return send_file(kepub, mimetype="application/epub+zip", as_attachment=True)
+    output = convert(path)
+    Thread(target=defer_delete, args=(output,)).start()
+    # This technically is not the correct MIME type for AZW3, but Kindle requires it.
+    return send_file(output, mimetype="application/x-mobipocket-ebook", as_attachment=True)
 
 
 def render_index(sub: str = "") -> str:
@@ -74,34 +74,16 @@ def path_of_book(book: int) -> Path:
     return (BOOKS_PATH / dir / file).with_suffix(".epub")
 
 
-def fix_metadata(book: int, path: Path) -> Path:
-    data = epub.read_epub(path)
-    with db_cursor() as cur:
-        (title,) = fetch_one(cur, "select title from books where id = ?", book)
-        query = """
-        select a.name, a.sort
-        from books_authors_link as l join authors as a on l.author = a.id
-        where l.book = ?
-        """
-        authors = fetch_all(cur, query, book)
-    ns = "http://purl.org/dc/elements/1.1/"
-    data.metadata[ns]["title"] = []
-    data.metadata[ns]["creator"] = []
-    data.set_title(title)
-    log(f"Setting title to '{title}'")
-    for (author, sort) in authors:
-        log(f"Adding author '{author}'")
-        data.add_author(author, file_as=sort)
-    out = Path(gettempdir()) / path.name
-    epub.write_epub(out, data)
-    Thread(target=defer_delete, args=(out,)).start()
-    return out
-
-
 def convert(path: Path) -> Path:
-    out = (Path(gettempdir()) / path.name).with_suffix(".kepub.epub")
+    out = (Path(gettempdir()) / path.name).with_suffix(".azw3")
     log(f"Converting {path} to {out}")
-    subprocess.run(["kepubify", "--output", out, path], check=True)
+    args = ["ebook-convert", path, out]
+    # This cover tomfoolery doesn't actually work, but oh well:
+    # https://manual.calibre-ebook.com/faq.html#covers-for-books-i-send-to-my-e-ink-kindle-show-up-momentarily-and-then-are-replaced-by-a-generic-cover
+    cover = path.parent / "cover.jpg"
+    if cover.is_file():
+        args.extend(["--cover", cover])
+    subprocess.run(args, check=True)
     return out
 
 
