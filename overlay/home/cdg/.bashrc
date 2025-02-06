@@ -8,3 +8,4 @@ alias yt-dl='docker run \
                   -e PUID=$(id -u) \
                   -v "$(pwd)":/workdir:rw \
                   mikenye/youtube-dl'
+uptime

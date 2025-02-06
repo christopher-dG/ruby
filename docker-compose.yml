@@ -51,7 +51,7 @@ services:
       - /lib/modules:/lib/modules
   qbittorrent:
     <<: *service
-    image: lscr.io/linuxserver/qbittorrent:4.5.2
+    image: lscr.io/linuxserver/qbittorrent:5.0.3
     network_mode: service:wireguard
     environment:
       <<: *env
@@ -133,7 +133,8 @@ services:
       - ./config/autobrr:/config
   flaresolverr:
     <<: *service
-    image: ghcr.io/flaresolverr/flaresolverr
+    # image: ghcr.io/flaresolverr/flaresolverr
+    image: alexfozor/flaresolverr:pr-1300-experimental
     ports:
       - 8191:8191
   bazarr:
@@ -146,21 +147,6 @@ services:
     volumes:
       - ./config/bazarr:/config
       - ./data:/data
-  tdarr:
-    <<: *service
-    image: ghcr.io/haveagitgat/tdarr
-    environment:
-      <<: *env
-      internalNode: true
-    ports:
-      - 8265:8265
-      - 8266:8266
-      - 8267:8267
-    volumes:
-      - ./config/tdarr:/app
-      - ./data:/data
-    devices:
-      - /dev/dri:/dev/dri
   unpackerr:
     <<: *service
     image: golift/unpackerr

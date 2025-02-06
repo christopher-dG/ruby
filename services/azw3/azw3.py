@@ -71,7 +71,7 @@ def path_of_book(book: int) -> Path:
         (file,) = fetch_one(
             cur, "select name from data where book = ? and format = 'EPUB'", book
         )
-    return f"{BOOKS_PATH / dir / file}.epub"
+    return Path(f"{BOOKS_PATH / dir / file}.epub")
 
 
 def convert(path: Path) -> Path:
