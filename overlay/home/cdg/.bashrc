@@ -1,7 +1,7 @@
 alias ls='ls --color=auto'
 export GPG_TTY=$(tty)
 export EDITOR=nano
-source /opt/asdf-vm/asdf.sh
+eval "$(~/.local/bin/mise activate bash)"
 alias yt-dl='docker run \
                   --rm -i \
                   -e PGID=$(id -g) \
