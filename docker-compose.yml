@@ -91,9 +91,9 @@ services:
     volumes:
       - ./config/calibre:/config
       - ./data/books:/books
-  azw3:
+  kepubify:
     <<: *service
-    build: services/azw3
+    build: services/kepubify
     environment:
       <<: *env
       BOOKS_PATH: /books

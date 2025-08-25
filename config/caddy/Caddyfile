@@ -27,8 +27,8 @@ share.cdg.dev {
 	}
 }
 
-azw3.cdg.dev {
-	reverse_proxy azw3:5555
+kepubify.cdg.dev {
+	reverse_proxy kepubify:5555
 }
 
 plex.cdg.dev {
