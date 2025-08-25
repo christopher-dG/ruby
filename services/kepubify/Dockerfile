@@ -9,4 +9,4 @@ RUN pip install -r requirements.txt
 USER kepubify
 WORKDIR /home/kepubify
 COPY kepubify.py .
-CMD gunicorn --bind 0.0.0.0:5555 kepubify:app
+CMD ["gunicorn", "--bind", "0.0.0.0:5555", "kepubify:app"]

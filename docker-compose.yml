@@ -4,7 +4,6 @@ x-env: &env
   PUID: 1000
   PGID: 1000
   TZ: America/Halifax
-version: "2.1"
 services:
   caddy:
     <<: *service
