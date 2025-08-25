@@ -131,6 +131,7 @@ services:
       - 7474:7474
     volumes:
       - ./config/autobrr:/config
+      - ./data:/data
   flaresolverr:
     <<: *service
     # image: ghcr.io/flaresolverr/flaresolverr
