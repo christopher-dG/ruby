@@ -25,7 +25,7 @@ def iter_torrents(qbt):
                 if should_link(dest_file):
                     print(f"Linking {src_file} -> {dest_file}", flush=True)
                     os.link(src_file, dest_file)
-            if is_finished(t):
+            if is_finished(t, must_seed=False):
                 print(f"Deleting {t.name}", flush=True)
                 t.delete(delete_files=True)
 
@@ -43,9 +43,11 @@ def should_link(path):
     return True
 
 
-def is_finished(t):
+def is_finished(t, must_seed=True):
     if t.amount_left > 0:
         return False
+    if not must_seed:
+        return True
     if t.max_ratio > 0:
         if t.ratio >= t.max_ratio:
             return True
