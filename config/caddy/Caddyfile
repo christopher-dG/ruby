@@ -52,3 +52,7 @@ sonarr.cdg.dev {
 overseerr.cdg.dev {
 	reverse_proxy overseerr:5055
 }
+
+immich.cdg.dev {
+	reverse_proxy immich_server:2283
+}

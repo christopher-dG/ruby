@@ -192,3 +192,6 @@ services:
       - ./config/tautulli:/config
     ports:
       - 8181:8181
+include:
+  - path: ../immich/docker-compose.yml
+    env_file: ../immich/.env
