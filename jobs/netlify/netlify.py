@@ -62,5 +62,5 @@ if __name__ == "__main__":
     print(f"Site ID: {site}")
     zone = find(netlify_get(f"/sites/{site}/dns"), "name", DOMAIN)["id"]
     print(f"Zone ID: {zone}")
-    ip = requests.get("https://httpbin.org/ip").json()["origin"]
+    ip = requests.get("https://icanhazip.com").text.strip()
     update_record(zone, ip)
