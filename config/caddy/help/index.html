@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Help</title>
+</head>
+<style>
+body {
+    margin: 40px auto;
+    max-width: 650px;
+    line-height: 1.6;
+    font-family: sans-serif;
+    font-size: 18px;
+    color: #444;
+    padding: 0 10px;
+}
+h1, h2, h3, h4 {
+    line-height: 1.2;
+}
+a {
+    color: #0969da;
+}
+</style>
+<body>
+    {{ include "HELP.md" | markdown }}
+</body>
+</html>

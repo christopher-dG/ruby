@@ -56,3 +56,12 @@ overseerr.cdg.dev {
 immich.cdg.dev {
 	reverse_proxy immich_server:2283
 }
+
+help.cdg.dev {
+	root /srv
+	templates
+	file_server
+	handle /* {
+		try_files index.html
+	}
+}

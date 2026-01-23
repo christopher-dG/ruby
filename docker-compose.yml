@@ -17,6 +17,7 @@ services:
       - 443:443
     volumes:
       - ./config/caddy:/etc/caddy
+      - ./config/caddy/help:/srv
       - ./data:/data
   portainer:
     <<: *service
