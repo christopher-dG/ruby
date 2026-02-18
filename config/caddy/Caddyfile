@@ -50,7 +50,11 @@ sonarr.cdg.dev {
 }
 
 overseerr.cdg.dev {
-	reverse_proxy overseerr:5055
+	redir https://seerr.cdg.dev{uri} permanent
+}
+
+seerr.cdg.dev {
+	reverse_proxy seerr:5055
 }
 
 immich.cdg.dev {

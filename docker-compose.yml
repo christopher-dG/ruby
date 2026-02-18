@@ -101,15 +101,15 @@ services:
       - ./data/books:/books
     ports:
       - 5555:5555
-  overseerr:
+  seerr:
     <<: *service
-    image: lscr.io/linuxserver/overseerr
+    image: ghcr.io/seerr-team/seerr
     environment:
       <<: *env
     ports:
       - 5055:5055
     volumes:
-      - ./config/overseerr:/config
+      - ./config/seerr:/app/config
       - ./data:/data
   prowlarr:
     <<: *service
