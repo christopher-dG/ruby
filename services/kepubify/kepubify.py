@@ -1,4 +1,5 @@
 import os
+import shutil
 import sqlite3
 import subprocess
 import time
@@ -12,7 +13,6 @@ from textwrap import dedent
 from threading import Thread
 from typing import Any, Generator
 
-from ebooklib import epub
 from flask import Flask, Response, render_template_string, send_file
 
 app = Flask(__name__)
@@ -58,7 +58,7 @@ def render_index(sub: str = "") -> str:
         where data.format = 'EPUB'
         order by books.author_sort
         """
-        for (id, author, title) in fetch_all(cur, query):
+        for id, author, title in fetch_all(cur, query):
             name = f"{author} - {title}"
             if sub.lower() in name.lower():
                 books.append({"id": id, "name": name})
@@ -75,25 +75,32 @@ def path_of_book(book: int) -> Path:
 
 
 def fix_metadata(book: int, path: Path) -> Path:
-    data = epub.read_epub(path)
     with db_cursor() as cur:
-        (title,) = fetch_one(cur, "select title from books where id = ?", book)
+        title, sidx = fetch_one(
+            cur, "select title, series_index from books where id = ?", book
+        )
         query = """
-        select a.name, a.sort
+        select s.name
+        from books_series_link as l join series as s on l.series = s.id
+        where l.book = ?
+        """
+        series = fetch_one(cur, query, book)
+        query = """
+        select a.name
         from books_authors_link as l join authors as a on l.author = a.id
         where l.book = ?
         """
         authors = fetch_all(cur, query, book)
-    ns = "http://purl.org/dc/elements/1.1/"
-    data.metadata[ns]["title"] = []
-    data.metadata[ns]["creator"] = []
-    data.set_title(title)
-    log(f"Setting title to '{title}'")
-    for (author, sort) in authors:
-        log(f"Adding author '{author}'")
-        data.add_author(author, file_as=sort)
+    args = ["--title", title, "--authors", " & ".join(a[0] for a in authors)]
+    if series:
+        args.append(f"--series={series[0]}")
+        args.append(f"--index={sidx}")
+    cover = path.parent / "cover.jpg"
+    if cover.is_file():
+        args.append(f"--cover={cover}")
     out = Path(gettempdir()) / path.name
-    epub.write_epub(out, data)
+    shutil.copyfile(path, out)
+    subprocess.run(["ebook-meta", out, *args], check=True)
     Thread(target=defer_delete, args=(out,)).start()
     return out
 
