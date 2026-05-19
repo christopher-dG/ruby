@@ -44,14 +44,23 @@ For the best performance, I recommend not using a TV app and instead using some 
 To request shows/movies to be added to Plex, you have two options:
 
 1. Ask me to add it for you.
-2. Use [Overseerr](#overseerr) to add it yourself.
+2. Use [Seerr](#seerr) to add it yourself.
 
-#### Overseerr
+#### Seerr
 
-[Overseerr](https://overseerr.dev) is a system for request management.
-You can log in at https://overseerr.cdg.dev with your Plex account.
+[Seerr](https://seerr.dev) is a system for request management.
+You can log in at https://seerr.cdg.dev with your Plex account.
 Then just type in the search bar to find what you're looking for.
 If you've requested something a while ago but it's still not on Plex, let me know.
+
+### My show says it's "leaving soon"
+
+On the Plex homepage, you might see a collection of TV shows called "Leaving Soon", or a "Leaving \<date\>" badge on the posters of shows.
+This is automatically managed based on view history.
+If a show hasn't had a new episode added recently and has hasn't been watched in a long time (or never), it'll be queued for deletion.
+If you're going to watch something soon, you can add it to your [Watchlist](https://support.plex.tv/articles/universal-watchlist/) to preserve it, or just start watching an episode and it won't be deleted.
+If you're too late and something you wanted to watch is gone, don't panic, just re-request it or let me know.
+Storage is expensive and this should help me avoid having to buy more of it!
 
 ### Troubleshooting
 
