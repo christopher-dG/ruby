@@ -16,6 +16,7 @@ services:
     build: jobs/qbittorrent
     environment:
       DATA_DIR: /data
+      MANAGE_CATEGORIES:
       QBT_HOST: 87.101.92.171
       QBT_PORT: 13620
       QBT_USERNAME: admin

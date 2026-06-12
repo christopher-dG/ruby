@@ -8,12 +8,12 @@ import requests
 from qbittorrentapi import Client
 
 DATA_DIR = os.environ["DATA_DIR"]
-IGNORE_CATAGORIES = ["Books", "Movies", "TV", "Ratio"]  # Already managed or otherwise undesirable.
+CATEGORIES = os.environ["MANAGE_CATEGORIES"].split()
 
 
 def iter_torrents(qbt):
     for t in qbt.torrents.info():
-        if t.category in IGNORE_CATAGORIES:
+        if t.category not in CATEGORIES:
             continue
         if t.amount_left == 0:
             dest_dir = os.path.join(DATA_DIR, t.category.lower(), t.name)

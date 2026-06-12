@@ -1,6 +1,5 @@
 x-service: &service
   restart: unless-stopped
-  user: 1000:1000
 x-env: &env
   PUID: 1000
   PGID: 1000
@@ -197,6 +196,7 @@ services:
   maintainerr:
     <<: *service
     image: ghcr.io/maintainerr/maintainerr
+    user: 1000:1000
     ports:
       - 6246:6246
     volumes:
