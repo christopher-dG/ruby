@@ -61,6 +61,11 @@ immich.cdg.dev {
 	reverse_proxy immich_server:2283
 }
 
+stash.cdg.dev {
+	# I don't know how portable/reproducible this IP is...
+	reverse_proxy 192.168.2.41:9999
+}
+
 help.cdg.dev {
 	root /srv
 	templates

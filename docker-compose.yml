@@ -51,7 +51,7 @@ services:
       - /lib/modules:/lib/modules
   qbittorrent:
     <<: *service
-    image: lscr.io/linuxserver/qbittorrent:5.0.3
+    image: lscr.io/linuxserver/qbittorrent
     network_mode: service:wireguard
     environment:
       <<: *env
