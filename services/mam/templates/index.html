@@ -7,7 +7,8 @@
     <style>
       body { font-family: system-ui, sans-serif; margin: 2em; color: #222; }
       form.search { display: flex; gap: 0.5em; margin-bottom: 1.5em; }
-      form.search input { flex: 1; max-width: 40em; padding: 0.5em; font-size: 1em; }
+      form.search label { align-self: center; white-space: nowrap; }
+      form.search input[type=search] { flex: 1; max-width: 40em; padding: 0.5em; font-size: 1em; }
       button { padding: 0.4em 0.9em; font-size: 1em; cursor: pointer; }
       table { border-collapse: collapse; width: 100%; margin-bottom: 2em; }
       th, td { text-align: left; padding: 0.4em 0.6em; border-bottom: 1px solid #ddd; vertical-align: top; }
@@ -27,6 +28,7 @@
   <body>
     <form class="search" method="get" action="/">
       <input type="search" name="q" value="{{ query }}" placeholder="Title, author or series" autofocus>
+      <label><input type="checkbox" name="formats" value="all" {% if all_formats %}checked{% endif %}> All formats</label>
       <button type="submit">Search</button>
     </form>
 
@@ -72,7 +74,7 @@
           </tbody>
         </table>
       {% else %}
-        <p>No epub results for "{{ query }}".</p>
+        <p>No {% if not all_formats %}epub {% endif %}results for "{{ query }}".</p>
       {% endif %}
     {% endif %}
 

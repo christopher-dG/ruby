@@ -59,7 +59,7 @@ class Mam:
         except (OSError, ValueError):
             pass
 
-    def search(self, query: str) -> list[dict[str, Any]]:
+    def search(self, query: str, epub_only: bool = True) -> list[dict[str, Any]]:
         params = {
             "tor[text]": query,
             "tor[srchIn][title]": "true",
@@ -82,7 +82,9 @@ class Mam:
                 return []
             raise MamError(f"MAM search failed: {body['error']}")
         results = [parse_result(row) for row in body.get("data", [])]
-        return [r for r in results if "epub" in r["filetypes"]]
+        if epub_only:
+            results = [r for r in results if "epub" in r["filetypes"]]
+        return results
 
     def torrent_file(self, tid: int) -> bytes:
         resp = self.get("/tor/download.php", {"tid": str(tid)})
@@ -256,10 +258,11 @@ def recent_torrents() -> list[dict[str, Any]]:
 @app.route("/")
 def index() -> str:
     query = request.args.get("q", "").strip()
+    all_formats = request.args.get("formats") == "all"
     results, error, status_error = None, None, None
     if query:
         try:
-            results = mam.search(query)
+            results = mam.search(query, epub_only=not all_formats)
         except (MamError, requests.RequestException) as e:
             error = str(e)
     try:
@@ -269,6 +272,7 @@ def index() -> str:
     return render_template(
         "index.html",
         query=query,
+        all_formats=all_formats,
         results=results,
         error=error,
         torrents=torrents,
