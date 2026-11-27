@@ -1,7 +1,9 @@
 import html
 import json
 import os
+import re
 import subprocess
+import tempfile
 import threading
 import time
 import warnings
@@ -32,6 +34,12 @@ TAG_FAILED = "import-failed"
 OUR_TAGS = (TAG_PENDING, TAG_IMPORTED, TAG_FAILED)
 
 CALIBRE_TAG = "unorganized"
+
+# These are converted to EPUB on import, and only the EPUB is added to the library.
+CONVERT_TO_EPUB = (".azw3", ".mobi", ".azw", ".fb2", ".docx", ".rtf")
+# When a torrent has a book in more than one format, the earliest one in this list is imported.
+# PDFs are imported as-is because converting them to EPUB gives poor results.
+FORMAT_PRIORITY = (".epub", *CONVERT_TO_EPUB, ".pdf")
 
 
 class MamError(Exception):
@@ -210,23 +218,72 @@ def import_completed() -> None:
 
 def import_torrent(t: TorrentDictionary) -> None:
     # The torrent's files stay where they are so that it keeps seeding; calibredb makes a copy.
-    epubs = [Path(t.save_path) / f.name for f in t.files if f.name.lower().endswith(".epub")]
-    if not epubs:
-        raise MamError("the torrent has no epub files")
-    for path in epubs:
+    files = choose_files([Path(t.save_path) / f.name for f in t.files])
+    if not files:
+        raise MamError("the torrent has no supported ebook files")
+    for path in files:
         if not path.is_file():
             raise MamError(f"{path} does not exist. Is the torrents directory mounted?")
-    cmd = ["calibredb", "add", "--with-library", BOOKS_PATH, "--tags", CALIBRE_TAG]
-    proc = subprocess.run(
-        [*cmd, *map(str, epubs)], capture_output=True, text=True, timeout=300
-    )
+    errors = []
+    for path in files:
+        try:
+            import_file(path)
+        except Exception as e:
+            errors.append(f"{path.name}: {e}")
+    if errors:
+        raise MamError("; ".join(errors))
+
+
+def choose_files(paths: list[Path]) -> list[Path]:
+    """
+    Pick the best format of each book in a torrent.
+
+    Files with the same name but different extensions (e.g. Book.mobi and Book.pdf, even in
+    different folders) are treated as one book, so that it isn't added twice.
+    """
+    books: dict[str, list[Path]] = {}
+    for path in paths:
+        if path.suffix.lower() in FORMAT_PRIORITY:
+            books.setdefault(path.stem.lower(), []).append(path)
+    chosen = []
+    for candidates in books.values():
+        best = min(FORMAT_PRIORITY.index(p.suffix.lower()) for p in candidates)
+        chosen.extend(p for p in candidates if FORMAT_PRIORITY.index(p.suffix.lower()) == best)
+    return sorted(chosen)
+
+
+def import_file(path: Path) -> None:
+    if path.suffix.lower() not in CONVERT_TO_EPUB:
+        book_id = calibredb_add(path)
+        log(f"Imported {path.name} as book {book_id}")
+        return
+    # Only the EPUB goes into the library. The converted copy lives in a temporary directory, and
+    # the original is left alone because it belongs to the torrent.
+    with tempfile.TemporaryDirectory() as tmp:
+        epub = Path(tmp) / f"{path.stem}.epub"
+        run(["ebook-convert", str(path), str(epub)], timeout=900)
+        book_id = calibredb_add(epub)
+    log(f"Converted {path.name} to EPUB and imported it as book {book_id}")
+
+
+def calibredb_add(path: Path) -> int:
+    cmd = ["calibredb", "add", "--with-library", BOOKS_PATH, "--tags", CALIBRE_TAG, str(path)]
+    output = run(cmd)
+    # calibredb exits successfully when it skips duplicates, so check that something was added.
+    match = re.search(r"Added book ids: (\d+)", output)
+    if not match:
+        raise MamError(f"calibredb did not add it (already in the library?): {output}")
+    return int(match.group(1))
+
+
+def run(cmd: list[str], timeout: int = 300) -> str:
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
     output = (proc.stdout + proc.stderr).strip()
     if proc.returncode != 0:
-        raise MamError(f"calibredb exited with {proc.returncode}: {output}")
-    # calibredb exits successfully when it skips duplicates, so check that something was added.
-    if "Added book ids" not in output:
-        raise MamError(f"calibredb did not add anything (already in the library?): {output}")
-    log(f"Imported {t.name}: {output}")
+        # ebook-convert is very chatty, so only keep the end of its output.
+        tail = "\n".join(output.splitlines()[-10:])
+        raise MamError(f"{Path(cmd[0]).name} exited with {proc.returncode}: {tail}")
+    return output
 
 
 def poll_forever() -> None:
