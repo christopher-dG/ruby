@@ -101,6 +101,29 @@ services:
       - ./data/books:/books
     ports:
       - 5555:5555
+  mam:
+    <<: *service
+    build: services/mam
+    # Matches PUID/PGID so that files added to the Calibre library have the right owner.
+    user: 1000:1000
+    environment:
+      <<: *env
+      BOOKS_PATH: /books
+      STATE_DIR: /config
+      # Create an IP-locked session in MAM preferences -> Security and paste its mam_id here.
+      MAM_ID:
+      # qBittorrent shares the wireguard container's network, so it's reachable by that name.
+      QBT_HOST: wireguard
+      QBT_PORT: 13620
+      QBT_USERNAME: admin
+      QBT_PASSWORD:
+    volumes:
+      - ./config/mam:/config
+      - ./data/books:/books
+      # Must match qBittorrent's mount so that the paths it reports are valid here.
+      - ./data/torrents:/data/torrents:ro
+    ports:
+      - 5556:5556
   seerr:
     <<: *service
     image: ghcr.io/seerr-team/seerr
