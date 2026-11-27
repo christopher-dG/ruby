@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MAM Books</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 2em; color: #222; }
+      form.search { display: flex; gap: 0.5em; margin-bottom: 1.5em; }
+      form.search label { align-self: center; white-space: nowrap; }
+      form.search input[type=search] { flex: 1; max-width: 40em; padding: 0.5em; font-size: 1em; }
+      button { padding: 0.4em 0.9em; font-size: 1em; cursor: pointer; }
+      table { border-collapse: collapse; width: 100%; margin-bottom: 2em; }
+      th, td { text-align: left; padding: 0.4em 0.6em; border-bottom: 1px solid #ddd; vertical-align: top; }
+      th { background: #f4f4f4; }
+      td.num { text-align: right; white-space: nowrap; }
+      a { color: #1a5fb4; }
+      .muted { color: #777; font-size: 0.9em; }
+      .badge { display: inline-block; font-size: 0.75em; padding: 0.1em 0.4em; border-radius: 3px; margin-left: 0.3em; color: white; }
+      .free { background: #2e7d32; }
+      .vip { background: #6a1b9a; }
+      .snatched { background: #777; }
+      .error { color: #b00020; }
+      .status-imported { color: #2e7d32; }
+      .status-import-failed { color: #b00020; }
+    </style>
+  </head>
+  <body>
+    <form class="search" method="get" action="/">
+      <input type="search" name="q" value="{{ query }}" placeholder="Title, author or series" autofocus>
+      <label><input type="checkbox" name="formats" value="all" {% if all_formats %}checked{% endif %}> All formats</label>
+      <button type="submit">Search</button>
+    </form>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% elif results is not none %}
+      {% if results %}
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Series</th>
+              <th>Formats</th>
+              <th>Lang</th>
+              <th>Size</th>
+              <th>Seeders</th>
+              <th>Snatches</th>
+              <th>Added</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in results %}
+              <tr>
+                <td>
+                  <a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.title }}</a>
+                  {% if r.free %}<span class="badge free">FL</span>{% endif %}
+                  {% if r.vip %}<span class="badge vip">VIP</span>{% endif %}
+                  {% if r.snatched %}<span class="badge snatched">snatched</span>{% endif %}
+                </td>
+                <td>{{ r.authors | join(", ") }}</td>
+                <td>{{ r.series | join(", ") }}</td>
+                <td>{{ r.filetypes | join(", ") }}</td>
+                <td>{{ r.lang }}</td>
+                <td class="num">{{ r.size }}</td>
+                <td class="num">{{ r.seeders }}</td>
+                <td class="num">{{ r.snatches }}</td>
+                <td class="muted">{{ r.added[:10] }}</td>
+                <td><button type="button" class="download" data-id="{{ r.id }}">Download</button></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No {% if not all_formats %}epub {% endif %}results for "{{ query }}".</p>
+      {% endif %}
+    {% endif %}
+
+    <h3>Recent downloads</h3>
+    {% if status_error %}
+      <p class="error">{{ status_error }}</p>
+    {% elif torrents %}
+      <table>
+        <thead>
+          <tr><th>Torrent</th><th>Progress</th><th>State</th><th>Import</th></tr>
+        </thead>
+        <tbody>
+          {% for t in torrents %}
+            <tr>
+              <td>{{ t.name }}</td>
+              <td class="num">{{ t.progress }}%</td>
+              <td>{{ t.state }}</td>
+              <td class="status-{{ t.status }}">{{ t.status }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nothing yet.</p>
+    {% endif %}
+
+    <script>
+      for (const button of document.querySelectorAll("button.download")) {
+        button.addEventListener("click", async () => {
+          button.disabled = true;
+          button.textContent = "Adding...";
+          try {
+            const resp = await fetch(`/download/${button.dataset.id}`, {
+              method: "POST",
+              headers: { "X-Requested-With": "fetch" },
+            });
+            const body = await resp.json();
+            if (!resp.ok) throw new Error(body.error || `HTTP ${resp.status}`);
+            button.textContent = "Added";
+          } catch (e) {
+            button.disabled = false;
+            button.textContent = "Retry";
+            alert(`Download failed: ${e.message}`);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
